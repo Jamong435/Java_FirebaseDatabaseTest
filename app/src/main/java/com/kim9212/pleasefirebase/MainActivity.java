@@ -2,6 +2,7 @@ package com.kim9212.pleasefirebase;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -54,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String gender = "";
     String sort = "id";
 
+    String a,b;
+
     ArrayAdapter<String> arrayAdapter;
 
     static ArrayList<String> arrayIndex =  new ArrayList<String>();
@@ -67,8 +70,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_Insert.setOnClickListener(this);
         btn_Update = (Button) findViewById(R.id.btn_update);
         btn_Update.setOnClickListener(this);
-        btn_Select = (Button) findViewById(R.id.btn_select);
-        btn_Select.setOnClickListener(this);
+//        btn_Select = (Button) findViewById(R.id.btn_select);
+//        btn_Select.setOnClickListener(this);
         edit_ID = (EditText) findViewById(R.id.edit_id);
         edit_Name = (EditText) findViewById(R.id.edit_name);
         edit_Age = (EditText) findViewById(R.id.edit_age);
@@ -80,12 +83,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         check_Man.setOnClickListener(this);
         check_Woman = (CheckBox) findViewById(R.id.check_woman);
         check_Woman.setOnClickListener(this);
-        check_ID = (CheckBox) findViewById(R.id.check_userid);
-        check_ID.setOnClickListener(this);
-        check_Name = (CheckBox) findViewById(R.id.check_name);
-        check_Name.setOnClickListener(this);
-        check_Age = (CheckBox) findViewById(R.id.check_age);
-        check_Age.setOnClickListener(this);
+//        check_ID = (CheckBox) findViewById(R.id.check_userid);
+//        check_ID.setOnClickListener(this);
+//        check_Name = (CheckBox) findViewById(R.id.check_name);
+//        check_Name.setOnClickListener(this);
+//        check_Age = (CheckBox) findViewById(R.id.check_age);
+//        check_Age.setOnClickListener(this);
 
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
         ListView listView = (ListView) findViewById(R.id.db_list_view);
@@ -93,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         listView.setOnItemClickListener(onClickListener);
         listView.setOnItemLongClickListener(longClickListener);
 
-        check_ID.setChecked(true);
+//        check_ID.setChecked(true);
         getFirebaseDatabase();
 
         btn_Insert.setEnabled(true);
@@ -113,10 +116,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private AdapterView.OnItemClickListener onClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Log.e("On Click", "position = " + position);
-            Log.e("On Click", "Data: " + arrayData.get(position));
+
             String[] tempData = arrayData.get(position).split("\\s+");
-            Log.e("On Click", "Split Result = " + tempData);
+
             edit_ID.setText(tempData[0].trim());
             edit_Name.setText(tempData[1].trim());
             edit_Age.setText(tempData[2].trim());
@@ -136,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private AdapterView.OnItemLongClickListener longClickListener = new AdapterView.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            Log.d("Long Click", "position = " + position);
+
             final String[] nowData = arrayData.get(position).split("\\s+");
             ID = nowData[0];
             String viewData = nowData[0] + ", " + nowData[1] + ", " + nowData[2] + ", " + nowData[3];
@@ -181,6 +183,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             postValues = post.toMap();
         }
         childUpdates.put("/id_list/" + ID, postValues);
+        Intent intent= getIntent();
+        intent.putExtra("Name", ID);
+        intent.putExtra("Nick", name);
+        setResult(RESULT_OK, intent);
         mPostReference.updateChildren(childUpdates);
     }
 
@@ -198,12 +204,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     String Result = setTextLength(info[0],10) + setTextLength(info[1],10) + setTextLength(info[2],10) + setTextLength(info[3],10);
                     arrayData.add(Result);
                     arrayIndex.add(key);
-                    Log.d("getFirebaseDatabase", "key: " + key);
-                    Log.d("getFirebaseDatabase", "info: " + info[0] + info[1] + info[2] + info[3]);
+
+
+
                 }
                 arrayAdapter.clear();
                 arrayAdapter.addAll(arrayData);
                 arrayAdapter.notifyDataSetChanged();
+
+
             }
 
             @Override
@@ -255,9 +264,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 edit_ID.setCursorVisible(true);
                 break;
 
-            case R.id.btn_select:
-                getFirebaseDatabase();
-                break;
+
 
             case R.id.check_man:
                 check_Woman.setChecked(false);
@@ -269,23 +276,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 gender = "Woman";
                 break;
 
-            case R.id.check_userid:
-                check_Name.setChecked(false);
-                check_Age.setChecked(false);
-                sort = "id";
-                break;
-
-            case R.id.check_name:
-                check_ID.setChecked(false);
-                check_Age.setChecked(false);
-                sort = "name";
-                break;
-
-            case R.id.check_age:
-                check_ID.setChecked(false);
-                check_Name.setChecked(false);
-                sort = "age";
-                break;
+//            case R.id.btn_select:
+//                getFirebaseDatabase();
+//                break;
+//            case R.id.check_userid:
+//                check_Name.setChecked(false);
+//                check_Age.setChecked(false);
+//                sort = "id";
+//                break;
+//
+//            case R.id.check_name:
+//                check_ID.setChecked(false);
+//                check_Age.setChecked(false);
+//                sort = "name";
+//                break;
+//
+//            case R.id.check_age:
+//                check_ID.setChecked(false);
+//                check_Name.setChecked(false);
+//                sort = "age";
+//                break;
         }
+    }
+
+    public void clickable(View view) {
+        Intent intent= new Intent(this,MainActivity2.class);
+        startActivity(intent);
+
     }
 }
